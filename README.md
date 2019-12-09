@@ -4,13 +4,13 @@
 
 **Session Title:** Creating applications that can see, hear, speak or understand - using Microsoft Cognitive Services
 
-**Session Abstract:** In this workshop you will be introduced to the [Microsoft Azure Cognitive Services](https://azure.microsoft.com/en-gb/services/cognitive-services/?WT.mc_id=workshop-github-dmitryso), a range of offerings you can use to infuse intelligence and machine learning into your applications without needing to build the code from scratch.
-We will cover pre-trained AI APIs, such as [computer vision](https://azure.microsoft.com/en-gb/services/cognitive-services/directory/vision/?WT.mc_id=workshop-github-dmitryso), that are accessed by REST protocol. Next we will dive into Custom AI that uses transfer learning - [Microsoft Azure Custom Vision](https://azure.microsoft.com/en-gb/services/cognitive-services/custom-vision-service/?WT.mc_id=workshop-github-dmitryso). This enables you to provide a small amount of your own data to train an image classification model. Wrapping the workshop up by building our custom trained AI into an application - using [Logic Apps](https://azure.microsoft.com/en-gb/services/logic-apps/?WT.mc_id=workshop-github-dmitryso), this technology is ideal for building data pipeline processes that work with your machine learning models.
+**Session Abstract:** In this workshop you will be introduced to the [Microsoft Azure Cognitive Services](https://azure.microsoft.com/services/cognitive-services/?WT.mc_id=workshop-github-dmitryso), a range of offerings you can use to infuse intelligence and machine learning into your applications without needing to build the code from scratch.
+We will cover pre-trained AI APIs, such as [computer vision](https://azure.microsoft.com/services/cognitive-services/directory/vision/?WT.mc_id=workshop-github-dmitryso), that are accessed by REST protocol. Next we will dive into Custom AI that uses transfer learning - [Microsoft Azure Custom Vision](https://azure.microsoft.com/services/cognitive-services/custom-vision-service/?WT.mc_id=workshop-github-dmitryso). This enables you to provide a small amount of your own data to train an image classification model. Wrapping the workshop up by building our custom trained AI into an application - using [Logic Apps](https://azure.microsoft.com/services/logic-apps/?WT.mc_id=workshop-github-dmitryso), this technology is ideal for building data pipeline processes that work with your machine learning models.
 
 ## Pre-requisites for your machine
 
 * Clone this repository to your local machine to gain images and code samples you need for the demos: ```git clone https://github.com/GlobalAICommunity/Workshop-CustomVisionAITools.git``` or choose 'Clone or Download' green button and then 'Download ZIP'
-* Azure Pass or [Microsoft Azure Subscription](https://azure.microsoft.com/en-gb/free/?WT.mc_id=workshop-github-dmitryso)
+* Azure Pass / Lab Instructions or [Microsoft Azure Subscription](https://azure.microsoft.com/free/?WT.mc_id=workshop-github-dmitryso)
 * Laptop with a modern web browser (Google Chrome, Microsoft Edge)
 * Postman, API Development Environment - [available on Windows, Linux and macOS](https://www.getpostman.com/)
 
@@ -67,6 +67,8 @@ First create a Resource Group.
   * Select the location
   * Click Create
 
+**NB:** If you are using the lab environment, there would already be one resource group created in the subscription and available to you. You will not be allowed to create any additional resource groups. 
+
 ![Resource Group Details](docsimages/createResourceGroup.png)  
 
 ### Create Custom Vision instance
@@ -84,6 +86,8 @@ Now create a Custom Vision instance in your Azure account.
   * Choose the S0 tier for both 'Prediction pricing tier' and Training pricing tier
   * Select your created Resource group and make sure it is in the same data centre location (in this case 'globalaibootcamp' in West Europe
   * Click Create
+
+**NB:** You may actually skip this step, as you will be allowed to create custom vision instance later on from [custom vision web interface](http://customvision.ai). However, more options are available if you create it this way.
 
 ### Build Classifier
 
@@ -245,19 +249,21 @@ For the public access level setting select **Container (anonymous read access fo
 
 > Complete the above for an image storage account and a results storage account with the same settings
 
-### Create Logic App
+### Create Logic App / Microsoft Flow
 
-Now we will create a Logic App - this will connect your image storage account to your AI classification service and put the results in your results storage account
+Microsoft provides two very similar concepts: Logic Apps and Microsoft Flow. Logic Apps are intended for software developers, while Microsoft Flow is more targeted to Office Power Users. In this exercise, you can use any of those technologies. If you are using Lab Environment, you may not be allowed to create Logic App - use Microsoft Flow instead.
 
-Head to the Azure Portal Homepage. You are going to use Event Grid, a service that detects triggers in an Azure subscription (in our case, when a new blob is created in your Azure Storage account). Before you build with this - you must register it.
+In our case, we will use Logic App / Flow to automatically classify images that are placed into storage container. To detect when new images are stored, we will use Event Grid, a service that detects triggers in an Azure subscription (in our case, when a new blob is created in your Azure Storage account). Before you build with this - you must register it.
 
-Navigate to Subscriptions, select your subscription and find Resource Providers in the left pane. If it's not in left panel, select "All services" and find in here. Once the resource providers are listed - search "event" and select **Microsoft.EventGrid**.
+From your Azure Portal, Navigate to Subscriptions, select your subscription and find Resource Providers in the left pane. If it's not in left panel, select "All services" and find in here. Once the resource providers are listed - search "event" and select **Microsoft.EventGrid**.
 
-If this is not already status registered, select **register** from the toolbar.
+If this is not already status registered, select **register** from the toolbar. You should see the green tick to indicate that registration is in place.
 
 ![Register Event Grid selection](docsimages/eventgrid.png)
 
-Once registered with a green tick - go back to your Resource Group. Select **Add**. Type Logic App and select the service.
+#### Creating Logic App
+
+To create a logic app, go back to your Resource Group. Select **Add**. Type Logic App and select the service.
 
 Create the logic app by entering some setup detail like below:
 
@@ -274,6 +280,16 @@ Choose **Create**
 Once created, go to resource. From here we can create our logic process. Select **Logic app designer** from the left menu and then the  **When an Event Grid resource event occurs** option.
 
 ![Logic App Trigger](docsimages/whenEventgrid.png)
+
+#### Using Microsoft Flow
+
+To use Microsoft Flow instead of the Logic App, just go to [http://flow.microsoft.com](http://flow.microsoft.com). Select **My Flows** from the left menu, and then **+ New** button above to create a new flow. Use **Automated: From Blank** option to start with an empty flow.
+
+Give your flow a name, and then in **Choose your flow trigger** section start typing *Event grid*. Select it, and then proceed with the next section.
+
+![Flow Trigger Selection](docsimages/selectFlowTrigger.png)
+
+#### Creating the flow for your app
 
 Connect to Azure event grid by signing in using your Azure credentials.
 
